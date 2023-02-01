@@ -173,7 +173,7 @@ class Dim(CGpm):
             self.clusters[k].set_hypers(self.hypers)
         self.aux_model = self.create_aux_model()
 
-    def transition_hyper_grids(self, X, n_grid=30):
+    def transition_hyper_grids(self, X, n_grid=1000):
         """Transitions hyperparameter grids using empirical Bayes."""
         self.hyper_grids = self.model.construct_hyper_grids(
             [x for x in X if not math.isnan(x)], n_grid=n_grid)

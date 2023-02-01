@@ -147,7 +147,7 @@ class Crp(DistributionGpm):
         return self.counts[self.data[rowid]] == 1 if rowid in self.data else 0
 
     @staticmethod
-    def construct_hyper_grids(X, n_grid=30):
+    def construct_hyper_grids(X, n_grid=1000):
         grids = dict()
         grids['alpha'] = gu.log_linspace(1./len(X), len(X), n_grid)
         return grids
