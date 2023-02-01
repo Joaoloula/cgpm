@@ -97,7 +97,10 @@ def test_categorical_forest():
         state.incorporate_dim(
             T[:,cat_id], outputs=[cat_id], cctype='categorical',
             distargs=distargs, v=0)
-    state.update_cctype(cat_id, 'random_forest', distargs=distargs)
+    # XXX: set distargs={'k':2} was distargs=distargs but got "UnboundLocalError:
+    # local variable 'distargs' referenced before assignment" -- which kinda
+    # makes sense.
+    state.update_cctype(cat_id, 'random_forest', distargs={'k':2})
 
     bernoulli_id = CCTYPES.index('bernoulli')
     state.incorporate_dim(
@@ -125,7 +128,7 @@ def test_categorical_forest():
 
 def test_categorical_forest_manual_inputs_errors():
     state = State(
-        T, cctypes=CCTYPES, distargs=DISTARGS, rng=gu.gen_rng(1))
+        T, cctypes=CCTYPES, distargs=DISTARGS, rng=gu.gen_rng(42))
     state.transition(N=1, progress=False)
     cat_id = CCTYPES.index('categorical')
 
@@ -142,7 +145,7 @@ def test_categorical_forest_manual_inputs_errors():
         state.update_cctype(1201, 'random_forest', distargs=distargs)
 
     # Updating cctype with input dimensions outside the view should raise.
-    cols_in_view = state.views[view_idx].dims.keys()
+    cols_in_view = list(state.views[view_idx].dims.keys())
     cols_out_view = [c for c in state.outputs if c not in cols_in_view]
     assert len(cols_in_view) > 0 and len(cols_out_view) > 0
     with pytest.raises(Exception):

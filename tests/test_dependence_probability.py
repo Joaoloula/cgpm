@@ -14,6 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from builtins import zip
+from builtins import range
 import itertools
 import numpy as np
 import pytest
@@ -51,7 +53,7 @@ def test_dependence_probability():
         [.95]*len(cctypes), rng=gu.gen_rng(100))
 
     T = T.T
-    outputs = range(0, 12, 2)
+    outputs = list(range(0, 12, 2))
 
     # Test for direct dependence for state and engine.
     s = State(
@@ -128,16 +130,13 @@ def test_dependence_probability_pairwise():
         rng=gu.gen_rng(0))
 
     Ds = engine.dependence_probability_pairwise(multiprocess=0)
-    assert len(Ds) == engine.num_states()
-    assert all(np.shape(D) == (len(outputs), len(outputs)) for D in Ds)
-    for D in Ds:
-        for col0, col1 in itertools.product(outputs, outputs):
-            i0 = outputs.index(col0)
-            i1 = outputs.index(col1)
-            actual = D[i0,i1]
-            expected = Zv[i0] == Zv[i1]
-            assert actual == expected
+    assert Ds.shape == (len(outputs), len(outputs))
+    for col0, col1 in itertools.product(outputs, outputs):
+        i0 = outputs.index(col0)
+        i1 = outputs.index(col1)
+        actual = Ds[i0,i1]
+        expected = Zv[i0] == Zv[i1]
+        assert actual == expected
 
     Ds = engine.dependence_probability_pairwise(colnos=[0,2], multiprocess=0)
-    assert len(Ds) == engine.num_states()
-    assert all(np.shape(D) == (2,2) for D in Ds)
+    assert Ds.shape == (2,2)

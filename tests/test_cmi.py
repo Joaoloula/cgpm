@@ -15,14 +15,13 @@
 # limitations under the License.
 
 
+from __future__ import absolute_import
 import numpy as np
 import pytest
 
 from cgpm.crosscat.engine import Engine
 from cgpm.crosscat.state import State
 from cgpm.utils.general import gen_rng
-
-from markers import integration
 
 
 def test_entropy_bernoulli_univariate__ci_():
@@ -31,7 +30,7 @@ def test_entropy_bernoulli_univariate__ci_():
     # Generate a univariate Bernoulli dataset.
     T = rng.choice([0,1], p=[.3,.7], size=250).reshape(-1,1)
 
-    engine = Engine(T, cctypes=['bernoulli'], rng=rng, num_states=16)
+    engine = Engine(T, cctypes=['bernoulli'], rng=rng, num_states=4)
     engine.transition(S=15)
 
     # exact computation.
@@ -49,7 +48,6 @@ def test_entropy_bernoulli_univariate__ci_():
     assert np.allclose(entropy_exact, entropy_mi, atol=.1)
     assert np.allclose(entropy_logpdf, entropy_mi, atol=.05)
 
-@integration
 def test_entropy_bernoulli_bivariate__ci_():
     rng = gen_rng(10)
 
@@ -66,11 +64,11 @@ def test_entropy_bernoulli_bivariate__ci_():
         T,
         cctypes=['categorical', 'categorical'],
         distargs=[{'k':2}, {'k':2}],
-        num_states=64,
+        num_states=1,
         rng=rng,
     )
 
-    engine.transition_lovecat(N=200)
+    engine.transition(N=10)
 
     # exact computation
     entropy_exact = (

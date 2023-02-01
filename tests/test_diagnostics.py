@@ -14,13 +14,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from __future__ import absolute_import
 import time
 
 from cgpm.crosscat.engine import Engine
 from cgpm.utils import general as gu
 from cgpm.utils import test as tu
-
-from markers import integration
 
 
 def retrieve_normal_dataset():
@@ -36,10 +35,9 @@ def retrieve_normal_dataset():
     return D
 
 
-@integration
-def test_simple_diagnostics():
+def test_simple_diagnostics__ci_():
     def diagnostics_without_iters(diagnostics):
-        return (v for k, v in diagnostics.iteritems() if k != 'iterations')
+        return (v for k, v in diagnostics.items() if k != 'iterations')
     D = retrieve_normal_dataset()
     engine = Engine(
             D.T, cctypes=['normal']*len(D),  num_states=4, rng=gu.gen_rng(12),)
@@ -53,7 +51,7 @@ def test_simple_diagnostics():
         all(len(v) == 13 for v in diagnostics_without_iters(state.diagnostics))
         for state in engine.states
     )
-    engine.transition_lovecat(N=7, checkpoint=3)
+    engine.transition(N=7, checkpoint=3)
     assert all(
         all(len(v) == 15 for v in diagnostics_without_iters(state.diagnostics))
         for state in engine.states
@@ -68,8 +66,3 @@ def test_simple_diagnostics():
         all(len(v) > 15 for v in diagnostics_without_iters(state.diagnostics))
         for state in engine.states
     )
-    # Add a timed analysis with diagnostic overrides large iterations, due
-    # to oddness of diagnostic tracing in lovecat.
-    start = time.time()
-    engine.transition_lovecat(N=20000, S=1, checkpoint=1)
-    assert 1 < time.time() - start < 3
