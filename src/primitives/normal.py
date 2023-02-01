@@ -128,7 +128,7 @@ class Normal(DistributionGpm):
         return {}
 
     @staticmethod
-    def construct_hyper_grids(X, n_grid=30):
+    def construct_hyper_grids(X, n_grid=1000):
         grids = dict()
         # Plus 1 for single observation case.
         N = len(X) + 1.

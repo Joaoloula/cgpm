@@ -108,7 +108,7 @@ class Bernoulli(DistributionGpm):
         return {'k': 2}
 
     @staticmethod
-    def construct_hyper_grids(X, n_grid=30):
+    def construct_hyper_grids(X, n_grid=1000):
         grids = dict()
         grids['alpha'] = gu.log_linspace(1., float(len(X)), n_grid)
         grids['beta'] = gu.log_linspace(1., float(len(X)),n_grid)
