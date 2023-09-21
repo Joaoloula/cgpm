@@ -180,6 +180,7 @@ class Dim(CGpm):
         # Only transition the hypers if previously uninstantiated.
         if not self.hypers:
             for h in self.hyper_grids:
+                import ipdb; ipdb.set_trace()
                 self.hypers[h] = self.rng.choice(self.hyper_grids[h])
         self.aux_model = self.create_aux_model()
 
